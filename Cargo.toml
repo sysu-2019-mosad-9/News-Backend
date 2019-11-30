@@ -1,0 +1,12 @@
+[package]
+name = "backend-9news"
+version = "0.1.0"
+authors = ["dasinlsb <399359237@qq.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rocket = "0.4.2"
+serde = "1.0"
+serde_json = "1.0"
