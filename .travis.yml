@@ -17,8 +17,11 @@ matrix:
     - cargo fmt --all -- --check
     - cargo check --all --all-targets
     - cargo clippy --all --all-targets
-    before_deploy:
-    deploy:
+    before_deploy: "skip"
+    deploy: []
+
+addons:
+  ssh_known_hosts: $SERVER_IP
 
 before_deploy:
   - docker build -t dasinlsb/newsback:lts .
@@ -30,13 +33,7 @@ before_deploy:
 deploy:
   provider: script
   skip_cleanup: true
-  script: ssh $SERVER_USERNAME@$SERVER_IP -o StrictHostKeyChecking=no -i /tmp/deploy_rsa 'cd /root/newsback && \
-    git pull origin master && \
-    docker-compose down && \
-    docker-compose pull && \
-    docker-compose up -d'
+  script: ssh $SERVER_USERNAME@$SERVER_IP -o StrictHostKeyChecking=no -i /tmp/deploy_rsa '/bin/bash -c "cd /root/newsback && ls && git pull origin master && docker-compose down && docker-compose pull && docker-compose up -d"'
   on:
     branch: master
 
-addons:
-  ssh_known_hosts: $SERVER_IP
