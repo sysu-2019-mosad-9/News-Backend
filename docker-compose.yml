@@ -1,0 +1,6 @@
+version: '3.7'
+services:
+  web:
+    image: dasinlsb/newsback:lts
+    ports:
+    - '8081:8000'
