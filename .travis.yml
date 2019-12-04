@@ -1,3 +1,4 @@
+os: linux
 language: shell
 services:
 - docker
@@ -7,7 +8,6 @@ matrix:
   - name: rustfmt/clippy-check
     language: rust
     rust:
-    - nightly
     - nightly-2019-11-13
     cache: cargo
     before_script:
@@ -17,21 +17,26 @@ matrix:
     - cargo fmt --all -- --check
     - cargo check --all --all-targets
     - cargo clippy --all --all-targets
-    - cargo build --all --all-targets
     before_deploy:
     deploy:
-  allow_failures:
-  - rust: nightly
 
 before_deploy:
   - docker build -t dasinlsb/newsback:lts .
   - echo "$DOCKER_PASSWORD" | docker login -u $DOCKER_USERNAME --password-stdin
   - docker push dasinlsb/newsback:lts
+  - openssl aes-256-cbc -K $encrypted_4006a652c8d1_key -iv $encrypted_4006a652c8d1_iv -in ci/deploy_rsa.enc -out /tmp/deploy_rsa -d
+  - chmod 600 /tmp/deploy_rsa
 
 deploy:
   provider: script
   skip_cleanup: true
-  script: ci/deploy.sh
+  script: ssh $SERVER_USERNAME@$SERVER_IP -o StrictHostKeyChecking=no -i /tmp/deploy_rsa 'cd /root/newsback && \
+    git pull origin master && \
+    docker-compose down && \
+    docker-compose pull && \
+    docker-compose up -d'
   on:
     branch: master
 
+addons:
+  ssh_known_hosts: $SERVER_IP
