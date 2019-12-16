@@ -1,7 +1,11 @@
 ###############
 ### BUILD IMAGE
 ###############
-FROM dasinlsb/rust:nightly-2019-11-13 as build
+
+### Ensure the application is runnable in prduction env
+#FROM dasinlsb/rust:nightly-2019-11-13 as build
+### Use the latest nightly in development env
+FROM rustlang/rust:nightly as build
 
 # Install dependencies
 RUN USER=root cargo new --bin /app
@@ -21,8 +25,8 @@ RUN cargo build --release
 #################
 FROM debian:buster-slim
 
-COPY --from=build /app/target/release/fake /
+COPY --from=build /app/target/release/news-backend /
 
 EXPOSE 8000
-CMD ["/fake"]
+CMD ["/news-backend"]
 
