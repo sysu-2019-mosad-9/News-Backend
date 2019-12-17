@@ -13,6 +13,7 @@ WORKDIR /app
 COPY Cargo.* ./
 COPY rust-toolchain ./
 
+ENV ROCKET_ENV=production
 RUN cargo build --release
 RUN find . -not -path "./target*" -delete
 

@@ -4,8 +4,15 @@
 extern crate rocket;
 #[macro_use]
 extern crate rocket_contrib;
+#[macro_use]
+extern crate diesel;
 
 mod api;
+mod crawler;
+mod db;
+mod model;
+mod schema;
+mod service;
 
 use rocket::Route;
 
