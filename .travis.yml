@@ -13,13 +13,13 @@ script:
   - cargo check --all --all-targets
   - cargo clippy --all --all-targets
 
-after_success:
-  - docker build -t dasinlsb/newsback:latest .
-  - echo "$DOCKER_PASSWORD" | docker login -u $DOCKER_USERNAME --password-stdin
-  - docker push dasinlsb/newsback:latest
+#after_success:
+#  - docker build -t dasinlsb/newsback:latest .
+#  - echo "$DOCKER_PASSWORD" | docker login -u $DOCKER_USERNAME --password-stdin
+#  - docker push dasinlsb/newsback:latest
 
-#deploy:
-#  provider: script
-#  script: bash ci/deploy.sh
-#  on:
-#    branch: master
+deploy:
+  provider: script
+  script: bash ci/deploy.sh
+  on:
+    branch: master
