@@ -1,14 +1,20 @@
 table! {
-    base_news (id) {
-        id -> Int4,
-        tag -> Text,
-        title -> Text,
-        n_image_urls -> Nullable<Int4>,
-        image_urls -> Array<Text>,
-        n_likes -> Nullable<Int4>,
-        n_comments -> Nullable<Int4>,
-        src_website -> Nullable<Text>,
-        craw_time -> Timestamp,
-        create_time -> Timestamp,
+    t_news (news_id) {
+        news_id -> Text,
+        news_tag -> Text,
+        news_title -> Text,
+        news_image_urls -> Array<Text>,
+        news_create_time -> Timestamp,
+        news_craw_time -> Timestamp,
     }
 }
+
+table! {
+    t_user (user_id) {
+        user_id -> Int4,
+        user_name -> Text,
+        user_password -> Text,
+    }
+}
+
+allow_tables_to_appear_in_same_query!(t_news, t_user,);

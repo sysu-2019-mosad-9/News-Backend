@@ -1,4 +1,4 @@
-pub mod base_repository;
+pub mod model;
 
 use diesel::{Connection, PgConnection};
 use dotenv::dotenv;

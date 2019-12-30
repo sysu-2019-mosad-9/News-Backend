@@ -6,12 +6,13 @@ extern crate rocket;
 extern crate rocket_contrib;
 #[macro_use]
 extern crate diesel;
+#[macro_use]
+extern crate serde_derive;
 
 mod api;
 mod crawler;
 mod db;
 mod error;
-mod model;
 mod schema;
 mod service;
 
@@ -26,6 +27,13 @@ fn not_found() -> JsonValue {
     })
 }
 
+#[catch(500)]
+fn internal_server_error() -> JsonValue {
+    json!({
+    "message": "server error",
+    })
+}
+
 fn mounts() -> Vec<(&'static str, Vec<Route>)> {
     vec![("/api/v1", api::v1::routes())]
 }
@@ -36,4 +44,11 @@ pub fn rocket() -> rocket::Rocket {
         instance = instance.mount(path, routes);
     }
     instance
+}
+
+pub fn start_craw() {
+    match crawler::news_crawler::crawl_news() {
+        Err(e) => println!("crawl error: {:?}", e),
+        _ => (),
+    }
 }
