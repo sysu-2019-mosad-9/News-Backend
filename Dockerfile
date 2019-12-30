@@ -1,33 +1,36 @@
 ###############
 ### BUILD IMAGE
 ###############
-
-### Ensure the application is runnable in prduction env
-#FROM dasinlsb/rust:nightly-2019-11-13 as build
-### Use the latest nightly in development env
-FROM rustlang/rust:nightly as build
+FROM rustlang/rust:nightly
 
 # Install dependencies
 RUN USER=root cargo new --bin /app
 WORKDIR /app
 COPY Cargo.* ./
 COPY rust-toolchain ./
-
 ENV ROCKET_ENV=production
 RUN cargo build --release
-RUN find . -not -path "./target*" -delete
+RUN cargo install diesel_cli --no-default-features --features postgres
 
 # Build server
-COPY . .
+COPY Rocket.toml ./
+COPY diesel.toml ./
+COPY .env ./
+COPY src ./src
+COPY migrations ./migrations
 RUN cargo build --release
+
+COPY wait-for-it.sh /
+EXPOSE 8000
 
 #################
 ### RUNTIME IMAGE
 #################
-FROM debian:buster-slim
+#FROM ubuntu:18.04
+#
+#COPY --from=build /app/target/release/news-backend /
+#COPY wait-for-it.sh /
+#
+#EXPOSE 8000
 
-COPY --from=build /app/target/release/news-backend /
-
-EXPOSE 8000
-CMD ["/news-backend"]
 

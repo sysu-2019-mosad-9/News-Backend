@@ -3,9 +3,9 @@ use crate::error::ServerError::StrError;
 use dotenv::dotenv;
 use rand::random;
 
+use std::collections::HashMap;
 use std::env;
 use std::error::Error;
-use std::collections::HashMap;
 
 #[derive(Deserialize)]
 struct SpliderVideo {
@@ -24,7 +24,7 @@ pub fn craw_video_splider() -> Result<Vec<VideoModel>, Box<dyn Error>> {
         "涨姿势",
         "猎奇",
         "黑科技",
-        "默认"
+        "默认",
     ];
     let tag_patterns = [
         "VAP4BFE3U",
@@ -36,13 +36,19 @@ pub fn craw_video_splider() -> Result<Vec<VideoModel>, Box<dyn Error>> {
         "VAP4BFE3U",
     ];
     let tag_type = random::<usize>() % tag_names.len();
-    let page = random::<usize>() % 40+1;
-    let mut res = reqwest::get(format!("http://c.m.163.com/nc/video/list/{}/y/{}-20.html", tag_patterns[tag_type], page).as_str())?;
+    let page = random::<usize>() % 40 + 1;
+    let mut res = reqwest::get(
+        format!(
+            "http://c.m.163.com/nc/video/list/{}/y/{}-20.html",
+            tag_patterns[tag_type], page
+        )
+        .as_str(),
+    )?;
     let raw = res.text()?;
     #[derive(Deserialize)]
     struct HttpResponse {
         #[serde(flatten)]
-        pub data: HashMap<String, Vec<SpliderVideo>>
+        pub data: HashMap<String, Vec<SpliderVideo>>,
     }
     let body: HttpResponse = serde_json::from_str(raw.as_str())?;
     let list = body.data.get(tag_patterns[tag_type]).unwrap();

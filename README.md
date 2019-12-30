@@ -4,7 +4,7 @@
 
 SYSU MOSAD 2019 Final Homework
 
-Backend for app **News**(?), written in Rust
+Backend for app **News Reader**, written in Rust
 
 Group Members:
 
@@ -12,21 +12,31 @@ Group Members:
 + Liu Jiahui([@tplish](https://github.com/tplish))
 + Liang Saibo([@dasinlsb](https://github.com/dasinlsb))
 
-## Requirements
+## Build & Run
 
-+ Nightly Rust (required by  [Rocket](https://rocket.rs/))
+### With Docker
 
-## Build
-
-To enable nightly support inside this project, run:
-
-```bash
-rustup override nightly
+```shell
+docker-compose up -d
 ```
 
-Then run the following commands to build:
+### Without Docker
 
-```bash
-cargo build
+[Postgres](https://www.postgresql.org) is required
+
+Modify following configuration in `.env`
+```
+DATABASE_URL=postgres://postgres:postgres@db/newsback
 ```
 
+To something like this:
+
+```
+DATABASE_URL=postgres://postgres:postgres@localhost/newsback
+```
+
+Run server in development(or production) mode
+
+```
+cargo run
+```
