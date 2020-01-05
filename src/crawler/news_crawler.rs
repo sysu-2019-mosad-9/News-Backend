@@ -3,12 +3,7 @@ use crate::db::model::news_model::NewsModel;
 use crate::error::ServerError::StrError;
 
 use dotenv::dotenv;
-
-use rand::random;
-
 use reqwest::header::{COOKIE, USER_AGENT};
-use reqwest::StatusCode;
-
 use std::error::Error;
 
 #[derive(Clone, Deserialize)]
@@ -29,63 +24,6 @@ struct SpliderNews {
 
 fn no_img() -> String {
     String::from("http://imgs.xueui.cn/wp-content/uploads/2015/12/235R92444-3.jpg")
-}
-
-fn test_images(imgs: Vec<String>) -> String {
-    if imgs.len() == 0 {
-        return no_img();
-    }
-    for i in 0..imgs.len() {
-        let img = imgs[i].clone();
-        match reqwest::get(img.as_str()) {
-            Ok(res) => {
-                if res.status() == StatusCode::OK {
-                    println!("ok image url: {}", img.as_str());
-                    return imgs[i].clone();
-                }
-            }
-            _ => {}
-        }
-    }
-    return no_img();
-}
-
-fn extra_images(count: usize) -> Result<Vec<String>, Box<dyn Error>> {
-    let pgnum = random::<usize>() % 5;
-    let url = format!(
-        "http://qc.wa.news.cn/nodeart/list?nid=11147664&pgnum={}&cnt={}&tp=1&orderby=1",
-        pgnum, count
-    );
-    let mut res = reqwest::get(url.as_str()).ok().unwrap();
-    #[derive(Deserialize)]
-    struct XHData {
-        allPics: Vec<String>,
-    }
-    #[derive(Deserialize)]
-    struct XHDataList {
-        pub list: Vec<XHData>,
-    }
-    #[derive(Deserialize)]
-    struct HttpResponse {
-        pub data: XHDataList,
-    }
-    let text = res.text()?;
-    let l = text.find('(').unwrap();
-    let r = text.rfind(')').unwrap();
-    let fin_text = &text[l + 1..r];
-    println!("err: {:?}", fin_text);
-    let body: HttpResponse = serde_json::from_str(fin_text)?;
-    let list: Vec<_> = body
-        .data
-        .list
-        .iter()
-        .map(|d| {
-            let mut temp = d.allPics.clone();
-            temp.push(no_img());
-            temp[0].clone()
-        })
-        .collect();
-    Ok(list)
 }
 
 pub fn craw_news_splider(tag: String) -> Result<Vec<NewsModel>, Box<dyn Error>> {

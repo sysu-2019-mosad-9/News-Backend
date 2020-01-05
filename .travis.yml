@@ -1,6 +1,4 @@
-os: linux
 language: rust
-services: docker
 rust:
   - nightly
 cache: cargo
@@ -9,7 +7,7 @@ before_script:
   - rustup component add rustfmt
   - rustup component add clippy
 script:
-#  - cargo fmt --all -- --check
+  - cargo fmt --all -- --check
 #  - cargo check --all --all-targets
 #  - cargo clippy --all --all-targets
   - cargo build

@@ -1,10 +1,9 @@
 use crate::db::model::video_model::VideoModel;
-use crate::error::ServerError::StrError;
-use dotenv::dotenv;
+
 use rand::random;
 
 use std::collections::HashMap;
-use std::env;
+
 use std::error::Error;
 
 #[derive(Deserialize)]
@@ -63,8 +62,4 @@ pub fn craw_video_splider() -> Result<Vec<VideoModel>, Box<dyn Error>> {
         })
         .collect();
     Ok(video_list)
-}
-
-pub fn crawl_video() -> Result<(), Box<dyn Error>> {
-    Ok(())
 }

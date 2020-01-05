@@ -14,7 +14,6 @@ mod crawler;
 mod db;
 mod error;
 mod schema;
-mod service;
 
 use rocket::Route;
 use rocket_contrib::json::JsonValue;
